@@ -1,7 +1,7 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*-: coding utf-8 -*-
 
-import ConfigParser
+import configparser
 from hermes_python.hermes import Hermes
 import hermes_python
 import io
@@ -20,7 +20,7 @@ DIR = os.path.dirname(os.path.realpath(__file__)) + '/alarm/'
 
 lang = "EN"
 
-class SnipsConfigParser(ConfigParser.SafeConfigParser):
+class SnipsConfigParser(configparser.SafeConfigParser):
     def to_dict(self):
         return {section: {option_name: option for option_name, option in self.items(section)} for section in self.sections()}
 
@@ -30,7 +30,7 @@ def read_configuration_file(configuration_file):
             conf_parser = SnipsConfigParser()
             conf_parser.readfp(f)
             return conf_parser.to_dict()
-    except (IOError, ConfigParser.Error) as e:
+    except (IOError, configparser.Error) as e:
         return dict()
 
 def tvOn(hermes,intent_message):

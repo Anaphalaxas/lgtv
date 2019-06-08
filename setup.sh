@@ -10,3 +10,7 @@ if [ ! -d "$VENV" ]; then
 fi
 . $VENV/bin/activate
 pip install -r requirements.txt
+if [ ! -e config.ini ]
+then
+	cp config.ini.default config.ini
+fi
