@@ -4,6 +4,7 @@ import requests
 import json
 from pylgtv import WebOsClient
 from wakeonlan import send_magic_packet
+from eiscp import eISCP
 
 id_dict = {
     "Netflix":"netflix",
@@ -13,10 +14,12 @@ id_dict = {
 }
 
 class SnipsLGTV:
-    def __init__(self, _ip, _mac):
+    def __init__(self, _ip, _mac, _onkyoip):
         self.ip = str(_ip)
         self.mac = _mac
+        self.onkyoip = _onkyoip
         self.client = WebOsClient(self.ip,"/keys/lg.key")
+        self.receiver = eISCP(self.onkyoip)
 
     def turn_on(self):
         send_magic_packet(self.mac)
@@ -39,4 +42,6 @@ class SnipsLGTV:
         if volume > 70:
             print("TOO LOUD!")
         else:
-            self.client.set_volume(volume)
+            print("Setting volume to %i" % volume )
+            self.receiver.command("volume %d" % volume)
+            print(self.client.last_response)

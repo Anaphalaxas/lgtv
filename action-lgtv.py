@@ -34,7 +34,11 @@ class Skill_LGTV:
         if not mac:
             print("Could not load [secret][mac] from %s" % CONFIG_INI)
             sys.exit(1)
-        self.snipslgtv = SnipsLGTV(ip, mac)
+        onkyoip = config.get("secret").get("onkyoip", None)
+        if not onkyoip:
+            print("Could not load [secret][onkyoip] from %s" % CONFIG_INI)
+            sys.exit(1)
+        self.snipslgtv = SnipsLGTV(ip, mac, onkyoip)
         self.queue = queue.Queue()
         self.thread_handler = ThreadHandler()
         self.thread_handler.run(target=self.start_blocking)
@@ -68,7 +72,7 @@ class Skill_LGTV:
 
 
     def openApp(self,hermes,intent_message):
-        app_name = intent_message.slots.appName
+        app_name = intent_message.slots.appName.first().value
         if not app_name:
             print("Could not read App name from intent message")
         res = self.snipslgtv.open_app(app_name)
@@ -77,13 +81,24 @@ class Skill_LGTV:
 
 
     def setVolume(self,hermes,intent_message):
-        volume = intent_message.slots.volume
+        volume = intent_message.slots.volume.first().value
         if not volume:
             print("Could not read volume from intent message")
+        print("CHANCE: VOLUME \\/")
+        print(volume)
         res = self.snipslgtv.set_volume(int(volume))
         current_session_id = intent_message.session_id
         self.terminate_feedback(hermes, intent_message)
 
+    def mute(self,hermes,intent):
+        res = self.snipslgtv.mute()
+        current_session_id = intent_message.session_id
+        self.terminate_feedback(hermes, intent_message)
+
+    def unmute(self,hermes,intent):
+        res = self.snipslgtv.unmute()
+        current_session_id = intent_message.session_id
+        self.terminate_feedback(hermes, intent_message)
 
     def callback(self, hermes, intent_message):
         intent_name = intent_message.intent.intent_name
@@ -103,6 +118,12 @@ class Skill_LGTV:
         if intent_name == 'setVolume':
             print("CHANCE SET VOLUME")
             self.queue.put(self.setVolume(hermes, intent_message))
+        if intent_name == 'mute':
+            print("CHANCE MUTE")
+            self.queue.put(self.mute(hermes, intent_message))
+        if intent_name == 'unMute':
+            print("CHANCE UNMUTE")
+            self.queue.put(self.unmute(hermes, intent_message))
 
     ####    section -> feedback reply // future function
     def terminate_feedback(self, hermes, intent_message, mode='default'):
