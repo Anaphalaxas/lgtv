@@ -2,7 +2,7 @@
 
 VENV=venv
 if [[ ! -d "$VENV" ]]; then
-    PYTHON=`which python3`
+    PYTHON=$(which python3)
     if [[ ! -f $PYTHON ]]; then
         echo "could not find python"
     fi
