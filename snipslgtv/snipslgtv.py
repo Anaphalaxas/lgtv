@@ -36,4 +36,7 @@ class SnipsLGTV:
         self.client.close_app()
 
     def set_volume(self,volume):
-        self.client.set_volume(volume)
+        if volume > 70:
+            print("TOO LOUD!")
+        else:
+            self.client.set_volume(volume)
