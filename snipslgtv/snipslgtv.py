@@ -45,3 +45,10 @@ class SnipsLGTV:
             print("Setting volume to %i" % volume )
             self.receiver.command("volume %d" % volume)
             print(self.client.last_response)
+
+    def mute(self):
+        self.client.set_mute("true")
+
+    def unmute(self):
+        self.client.set_mute("false")
+ 
