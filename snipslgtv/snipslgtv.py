@@ -3,14 +3,16 @@
 import requests
 import json
 from pylgtv import WebOsClient
+from wakeonlan import wol
 
 class SnipsLGTV:
     def __init__(self, _ip, _mac):
-        self.ip = _ip
+        self.ip = str(_ip)
         self.mac = _mac
-        self.client = WebOsClient(ip)
+        self.client = WebOsClient(self.ip)
 
     def turn_on(self):
+        wol.send_magic_packet(self.mac)
         self.client.power_on()
 
     def turn_off(self):

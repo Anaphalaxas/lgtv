@@ -34,7 +34,9 @@ def read_configuration_file(configuration_file):
         return dict()
 
 def tvOn(hermes,intent_message):
+    print("CHANCE: TVON CALLED")
     res = hermes.skill.turn_on()
+    print("CHANCE: POST_TURNON")
     current_session_id = intent_message.session_id
     hermes.publish_end_session(current_session_id, res.decode("latin-1"))
 
@@ -59,20 +61,16 @@ def openApp(hermes,intent_message):
 
 if __name__ == "__main__":
     config = read_configuration_file(CONFIG_INI)
-    settings = config.get("settings")
-    if not settings:
-        print("Could not load [settings] from %s" % CONFIG_INI)
-        sys.exit(1)
-    ip = config.get("ip")
+    ip = config.get("secret", "ip")
     if not ip:
-        print("Could not load [settings][ip] from %s" % CONFIG_INI)
+        print("Could not load [secret][ip] from %s" % CONFIG_INI)
         sys.exit(1)
-    mac = config.get("mac")
+    mac = config.get("secret", "mac")
     if not mac:
-        print("Could not load [settings][mac] from %s" % CONFIG_INI)
+        print("Could not load [secret][mac] from %s" % CONFIG_INI)
         sys.exit(1)
     skill = SnipsLGTV(ip, mac)
-    with Hermes(MQTT_ADDR.encode("ascii")) as h:
+    with Hermes(MQTT_ADDR) as h:
         h.skill = skill
         h.subscribe_intent("tvOn", tvOn).subscribe_intent("tvOff", tvOff)\
          .subscribe_intent("openApp", openApp).subscribe_intent("closeApp", closeApp)\
