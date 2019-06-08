@@ -1,9 +1,9 @@
 #/usr/bin/env bash -e
 
 VENV=venv
-if [[ ! -d "$VENV" ]]; then
+if [ ! -d "$VENV" ]; then
     PYTHON=$(which python3)
-    if [[ ! -f $PYTHON ]]; then
+    if [ ! -f $PYTHON ]; then
         echo "could not find python"
     fi
     virtualenv -p $PYTHON $VENV
